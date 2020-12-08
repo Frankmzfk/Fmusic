@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "109397219066",
+    "project_id": "fmusic-8c10f",
+    "storage_bucket": "fmusic-8c10f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:109397219066:android:aaf78b40fc341fd8b1db43",
+        "android_client_info": {
+          "package_name": "com.example.fmusic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "109397219066-rh8qh1unun7gth1pm9mm5kici52f728q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdEQVZxhPtmGNby4e84JT68U8Yjezvy2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "109397219066-rh8qh1unun7gth1pm9mm5kici52f728q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
