@@ -32,11 +32,11 @@ public class MusicActivity extends AppCompatActivity {
         String s = intent.getStringExtra("TAG");
         if (s.equals(TAG_ALL))
         {
-            // set all_music
+            // TODO установить all_music да так чтобы был неблокирующий запрос в файрбайс
         }
         else if (s.equals(TAG_MY))
         {
-            // set my music
+            // TODO установить my_music да так чтобы был неблокирующий запрос в файрбайс
         }
 
     }
