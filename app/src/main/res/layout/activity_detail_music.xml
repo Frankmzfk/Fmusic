@@ -6,4 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".DetailMusic">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="226dp"
+        tools:layout_editor_absoluteY="256dp">
+
+        <include
+            android:id="@+id/textView"
+            layout="@layout/music_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Текст песни"
+            android:textSize="18sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="500dp">
+
+            <LinearLayout
+                android:id="@+id/text_music"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+        <Button
+            android:id="@+id/on_off_fav_butt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
