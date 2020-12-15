@@ -29,7 +29,7 @@ public class MusicActivity extends AppCompatActivity {
 
         rv = (RecyclerView) findViewById(R.id.rv);
         Intent intent = getIntent();
-        String s = intent.getStringExtra("switch");
+        String s = intent.getStringExtra("TAG");
         if (s.equals(TAG_ALL))
         {
             // set all_music
