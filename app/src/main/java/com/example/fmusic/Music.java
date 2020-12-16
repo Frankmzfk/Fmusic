@@ -19,4 +19,5 @@ public class Music {
         this.text = text;
         this.fav = fav;
     }
+
 }

@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null)
         {
             login_view.setText(mAuth.getCurrentUser().getEmail());
+            Data.set_my_id(mAuth.getUid());
+            Data.init();
         }
     }
 }
