@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,16 +57,18 @@ public class DetailMusic extends AppCompatActivity {
 
     private void set_music(Music m) {
         Picasso.get().load(m.img).into(imageView);
-        band.setText(m.band);
-        track.setText(m.track);
+        band.setText("  " + m.band);
+        track.setText("  " + m.track);
 
         for (String line: m.text) {
             LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-            TextView text_line =new TextView(this);
+            lparams.gravity = Gravity.CENTER;
+
+            TextView text_line = new TextView(this);
             text_line.setLayoutParams(lparams);
-            text_line.setText(line);
+            text_line.setText("    " + line);
             this.text.addView(text_line);
         }
 
