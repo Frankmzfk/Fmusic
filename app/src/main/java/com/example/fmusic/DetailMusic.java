@@ -32,24 +32,26 @@ public class DetailMusic extends AppCompatActivity {
         track = (TextView) findViewById(R.id.track);
         imageView = (ImageView) findViewById(R.id.iv);
 
+        Intent intent = getIntent();
+        id = intent.getStringExtra("id");
+
         add_delete = (Button) findViewById(R.id.on_off_fav_butt);
         add_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Music lm = Data.get_music(id);
-                Data.swap_fav(lm);
-                if (lm.fav){
+
+                if (!lm.fav){
                     add_delete.setText("Убрать из избранного");
                 }
                 else {
                     add_delete.setText("Добавить в избранное");
                 }
+                Data.swap_fav(lm);
             }
         });
         text = (LinearLayout) findViewById(R.id.text_music);
 
-        Intent intent = getIntent();
-        id = intent.getStringExtra("id");
 
         Music m = Data.get_music(id);
         set_music(m);

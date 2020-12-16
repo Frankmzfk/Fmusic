@@ -7,8 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,18 +38,89 @@ public class Data
         return all_music.get(id);
     }
 
+    public static void exit(){
+        my_music = null;
+        all_music = null;
+        my_id = null;
+    }
+
+    private static String delete_id;
+
     public static void swap_fav(Music m)
     {
         if (m.fav)
         {
             // удаление
+            db.collection("fav_music")
+                    .whereEqualTo("id_man", my_id)
+                    .whereEqualTo("id_music", m.id)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        {
+                            if (task.isSuccessful())
+                            {
+                                for (QueryDocumentSnapshot document : task.getResult())
+                                {
+                                    delete_id = document.getId();
+                                }
+                                Log.e("TAG", delete_id);
+                                db.collection("fav_music").document(delete_id)
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d("TAG", "DocumentSnapshot successfully deleted!");
+                                                delete_id = "";
+                                                m.fav = false;
+
+                                                my_music.remove(m);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error deleting document", e);
+                                                delete_id = "";
+
+                                            }
+                                        });
+                            }
+                            else
+                            {
+                                Log.e("TAGload", "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
         }
         else
         {
             // добавление
+            Map<String, Object> new_fav_mus = new HashMap<>();
+            new_fav_mus.put("id_man", my_id);
+            new_fav_mus.put("id_music", m.id);
+
+            db.collection("fav_music")
+                    .add(new_fav_mus)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference)
+                        {
+                            Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
+                            m.fav = true;
+                            my_music.add(m);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w("TAG", "Error adding document", e);
+                        }
+                    });
 
         }
-        m.fav = !m.fav;
     }
 
     public static void init(){
@@ -90,7 +164,9 @@ public class Data
 
                                     String music = (String) document.get("id_music");
                                     Music m = all_music.get(music);
+                                    m.fav = true;
                                     my_music.add(m);
+                                    Log.e("TAG", my_music.size() + "");
                                 }
                             } else {
                                 Log.w("TAG", "Error getting documents.", task.getException());
@@ -138,9 +214,10 @@ public class Data
     }
 
     public static void set_my_music_in_rv(RecyclerView rv){
-        if (all_music != null)
+        if (my_music != null)
         {
-            rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music>(my_music)));
+            Log.e("TAG", my_music.size() + "");
+            rv.setAdapter(new MusicActivity.MusicAdapter(my_music));
         }
         else
         {
