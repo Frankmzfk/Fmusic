@@ -37,8 +37,16 @@ public class Data
 
     public static void swap_fav(Music m)
     {
+        if (m.fav)
+        {
+            // удаление
+        }
+        else
+        {
+            // добавление
+
+        }
         m.fav = !m.fav;
-        // TODO добавить запрос в firebase на изменеие поля
     }
 
     public static void init(){
@@ -69,7 +77,7 @@ public class Data
                         }
                     });
 
-
+            my_music = new ArrayList<>();
             db.collection("fav_music")
                     .whereEqualTo("id_man", my_id)
                     .get()
@@ -94,7 +102,94 @@ public class Data
 
     }
 
-    public static void set_music_in_rv(RecyclerView rv){
+    public static void set_all_music_in_rv(RecyclerView rv){
+        if (all_music != null)
+        {
+            rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music>(all_music.values())));
+        }
+        else
+        {
+            all_music = new HashMap<>();
+            db.collection("music")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("TAG", document.getId() + " => " + document.getData());
 
+                                    String band = (String) document.get("band");
+                                    String img = (String) document.get("img");
+                                    String id = document.getId();
+                                    String track = (String) document.get("track");
+                                    List<String> text = (ArrayList<String>) document.get("text");
+                                    Music m = new Music(band, img, track, id, text, false);
+                                    all_music.put(document.getId(), m);
+                                }
+                                rv.setAdapter(new MusicActivity.MusicAdapter((ArrayList<Music>) all_music.values()));
+
+                            } else {
+                                Log.w("TAG", "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
+
+    public static void set_my_music_in_rv(RecyclerView rv){
+        if (all_music != null)
+        {
+            rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music>(my_music)));
+        }
+        else
+        {
+            all_music = new HashMap<>();
+            db.collection("music")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("TAG", document.getId() + " => " + document.getData());
+
+                                    String band = (String) document.get("band");
+                                    String img = (String) document.get("img");
+                                    String id = document.getId();
+                                    String track = (String) document.get("track");
+                                    List<String> text = (ArrayList<String>) document.get("text");
+
+                                    Music m = new Music(band, img, track, id, text, false);
+                                    all_music.put(document.getId(), m);
+                                }
+                            } else {
+                                Log.w("TAG", "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
+
+            my_music = new ArrayList<>();
+            db.collection("fav_music")
+                    .whereEqualTo("id_man", my_id)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("TAG", document.getId() + " => " + document.getData());
+
+                                    String music = (String) document.get("id_music");
+                                    Music m = all_music.get(music);
+                                    my_music.add(m);
+                                }
+                                rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music> (my_music)));
+                            } else {
+                                Log.w("TAG", "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
+        }
     }
 }
