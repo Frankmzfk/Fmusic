@@ -2,6 +2,7 @@ package com.example.fmusic;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -28,15 +29,16 @@ public class MusicActivity extends AppCompatActivity {
         setContentView(R.layout.activity_music);
 
         rv = (RecyclerView) findViewById(R.id.rv);
+        rv.setLayoutManager(new LinearLayoutManager(this));
         Intent intent = getIntent();
         String s = intent.getStringExtra("TAG");
         if (s.equals(TAG_ALL))
         {
-            // TODO установить all_music да так чтобы был неблокирующий запрос в файрбайс
+            Data.set_all_music_in_rv(rv);
         }
         else if (s.equals(TAG_MY))
         {
-            // TODO установить my_music да так чтобы был неблокирующий запрос в файрбайс
+            Data.set_my_music_in_rv(rv);
         }
 
     }
@@ -60,8 +62,8 @@ public class MusicActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             Picasso.get().load(values.get(position).img).into(holder.imageView);
 
-            holder.band.setText(values.get(position).band);
-            holder.track.setText(values.get(position).track);
+            holder.band.setText("  " + values.get(position).band);
+            holder.track.setText("  " + values.get(position).track);
 
             holder.itemView.setTag(values.get(position));
             holder.itemView.setOnClickListener(onClickListener);
