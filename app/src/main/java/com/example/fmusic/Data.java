@@ -153,35 +153,36 @@ public class Data
                                     Music m = new Music(band, img, track, id, text, false);
                                     all_music.put(document.getId(), m);
                                 }
+                                //избранной
+                                my_music = new ArrayList<>();
+                                db.collection("fav_music")
+                                        .whereEqualTo("id_man", my_id)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        Log.d("TAG", document.getId() + " => " + document.getData());
+
+                                                        String music = (String) document.get("id_music");
+                                                        Music m = all_music.get(music);
+                                                        m.fav = true;
+                                                        my_music.add(m);
+                                                        Log.e("TAG", my_music.size() + "");
+                                                    }
+                                                } else {
+                                                    Log.w("TAG", "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
                             } else {
                                 Log.w("TAG", "Error getting documents.", task.getException());
                             }
                         }
                     });
 
-            //избранной
-            my_music = new ArrayList<>();
-            db.collection("fav_music")
-                    .whereEqualTo("id_man", my_id)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("TAG", document.getId() + " => " + document.getData());
 
-                                    String music = (String) document.get("id_music");
-                                    Music m = all_music.get(music);
-                                    m.fav = true;
-                                    my_music.add(m);
-                                    Log.e("TAG", my_music.size() + "");
-                                }
-                            } else {
-                                Log.w("TAG", "Error getting documents.", task.getException());
-                            }
-                        }
-                    });
 
         }
 
@@ -251,28 +252,27 @@ public class Data
                                     Music m = new Music(band, img, track, id, text, false);
                                     all_music.put(document.getId(), m);
                                 }
-                            } else {
-                                Log.w("TAG", "Error getting documents.", task.getException());
-                            }
-                        }
-                    });
+                                my_music = new ArrayList<>();
+                                db.collection("fav_music")
+                                        .whereEqualTo("id_man", my_id)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        Log.d("TAG", document.getId() + " => " + document.getData());
 
-            my_music = new ArrayList<>();
-            db.collection("fav_music")
-                    .whereEqualTo("id_man", my_id)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("TAG", document.getId() + " => " + document.getData());
-
-                                    String music = (String) document.get("id_music");
-                                    Music m = all_music.get(music);
-                                    my_music.add(m);
-                                }
-                                rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music> (my_music)));
+                                                        String music = (String) document.get("id_music");
+                                                        Music m = all_music.get(music);
+                                                        my_music.add(m);
+                                                    }
+                                                    rv.setAdapter(new MusicActivity.MusicAdapter(new ArrayList<Music> (my_music)));
+                                                } else {
+                                                    Log.w("TAG", "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
                             } else {
                                 Log.w("TAG", "Error getting documents.", task.getException());
                             }

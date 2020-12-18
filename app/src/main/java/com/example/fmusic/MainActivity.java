@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    mAuth = null;
                                     Data.exit();
+                                    Data.set_my_id(mAuth.getUid());
+                                    Data.init();
                                     Intent intent = new Intent(MainActivity.this, MainMenu.class);
                                     startActivity(intent);
                                 } else {
@@ -94,8 +95,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    mAuth = null;
                                     Data.exit();
+                                    Data.set_my_id(mAuth.getUid());
+                                    Data.init();
                                     login_view.setText(mAuth.getCurrentUser().getEmail());
                                     Intent intent = new Intent(MainActivity.this, MainMenu.class);
                                     startActivity(intent);
