@@ -9,6 +9,8 @@ import android.widget.Button;
 
 public class MainMenu extends AppCompatActivity {
 
+    // То меню с 2 кнопками
+
     Button go_music;
     Button go_fav;
 

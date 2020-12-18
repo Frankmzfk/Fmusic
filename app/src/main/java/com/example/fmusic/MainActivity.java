@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
+
+    // элементы входа
     TextView email;
     TextView login_view;
     TextView password;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         password = (TextView) findViewById(R.id.password);
 
         login = (Button) findViewById(R.id.login);
+
+        // установка кода на клик кнопки login
         login.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                // запрос в файрбуйс
                 mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                         .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         register = (Button) findViewById(R.id.register);
+        // установка кода на клик кнопки register
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                // запрос в файрбуйс
                 mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -102,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // если уже ранее входил в прогу
         start = (Button) findViewById(R.id.start_);
         start.setOnClickListener(new View.OnClickListener() {
             @Override

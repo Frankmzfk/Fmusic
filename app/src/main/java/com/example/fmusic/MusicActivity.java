@@ -43,6 +43,8 @@ public class MusicActivity extends AppCompatActivity {
 
     }
 
+
+    // Адаптер - штука позволяющая запихать music item в ресайкл вью и обработать нажатие на музыку
     public static class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
         private final List<Music> values;
 

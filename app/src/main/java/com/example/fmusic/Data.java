@@ -23,6 +23,8 @@ import java.util.Map;
 
 public class Data
 {
+
+    // класс для хранения данных и работы с ними
     private static List<Music> my_music;
     private static Map<String, Music> all_music;
     private static String my_id;
@@ -38,14 +40,18 @@ public class Data
         return all_music.get(id);
     }
 
+    // выход из аккаунта
     public static void exit(){
         my_music = null;
         all_music = null;
         my_id = null;
     }
 
+    // буфферная переменная (по другому не хочет коллбэк и бла бла бла)
     private static String delete_id;
 
+
+    // если музыка была в избранном - то удалить, если нет - добавить
     public static void swap_fav(Music m)
     {
         if (m.fav)
@@ -123,9 +129,11 @@ public class Data
         }
     }
 
+    // загрузка данных с файрбайса
     public static void init(){
         if (all_music == null)
         {
+            //всей музыки
             all_music = new HashMap<>();
             db.collection("music")
                     .get()
@@ -151,6 +159,7 @@ public class Data
                         }
                     });
 
+            //избранной
             my_music = new ArrayList<>();
             db.collection("fav_music")
                     .whereEqualTo("id_man", my_id)
@@ -178,6 +187,7 @@ public class Data
 
     }
 
+    // ВНИМАНИЕ ПРИКОЛ вызывается метод в котором коллбэк, который потом поставит данные в ресайкл вью
     public static void set_all_music_in_rv(RecyclerView rv){
         if (all_music != null)
         {
@@ -213,6 +223,7 @@ public class Data
         }
     }
 
+    // ВНИМАНИЕ ПРИКОЛ тоже самое только для избранного
     public static void set_my_music_in_rv(RecyclerView rv){
         if (my_music != null)
         {

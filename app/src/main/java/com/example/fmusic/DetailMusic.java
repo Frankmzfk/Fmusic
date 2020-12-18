@@ -15,6 +15,8 @@ import com.squareup.picasso.Picasso;
 
 public class DetailMusic extends AppCompatActivity {
 
+    // Класс для отображения и обработки детальной инфы - то окошко что открывается при нажатии на фильм в ресайкл вью
+
     Button add_delete;
     LinearLayout text;
 
