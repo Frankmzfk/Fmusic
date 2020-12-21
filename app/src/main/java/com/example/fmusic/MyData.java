@@ -1,10 +1,13 @@
 package com.example.fmusic;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -15,20 +18,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import androidx.work.Data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Data
+public class MyData
 {
 
     // класс для хранения данных и работы с ними
-    private static List<Music> my_music;
-    private static Map<String, Music> all_music;
-    private static String my_id;
-    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static List<Music> my_music;
+    public static Map<String, Music> all_music;
+    public static String my_id;
+    public static FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public static WorkManager mWorkManager;
 
     public static void set_my_id(String id)
     {
@@ -48,7 +53,7 @@ public class Data
     }
 
     // буфферная переменная (по другому не хочет коллбэк и бла бла бла)
-    private static String delete_id;
+    public static String delete_id;
 
 
     // если музыка была в избранном - то удалить, если нет - добавить
@@ -104,33 +109,20 @@ public class Data
         else
         {
             // добавление
-            Map<String, Object> new_fav_mus = new HashMap<>();
-            new_fav_mus.put("id_man", my_id);
-            new_fav_mus.put("id_music", m.id);
-
-            db.collection("fav_music")
-                    .add(new_fav_mus)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference)
-                        {
-                            Log.d("TAG", "DocumentSnapshot added with ID: " + documentReference.getId());
-                            m.fav = true;
-                            my_music.add(m);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("TAG", "Error adding document", e);
-                        }
-                    });
-
+            androidx.work.Data.Builder builder = new androidx.work.Data.Builder();
+            builder.putString("ID", m.id);
+            androidx.work.Data d = builder.build();
+            OneTimeWorkRequest blurRequest =
+                    new OneTimeWorkRequest.Builder(RequestAddWorker.class)
+                            .setInputData(d)
+                            .build();
+            mWorkManager.enqueue(blurRequest);
         }
     }
 
     // загрузка данных с файрбайса
-    public static void init(){
+    public static void init(Context context){
+        mWorkManager = WorkManager.getInstance(context);
         if (all_music == null)
         {
             //всей музыки
