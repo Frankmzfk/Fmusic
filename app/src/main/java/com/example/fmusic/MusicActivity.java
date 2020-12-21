@@ -34,11 +34,11 @@ public class MusicActivity extends AppCompatActivity {
         String s = intent.getStringExtra("TAG");
         if (s.equals(TAG_ALL))
         {
-            Data.set_all_music_in_rv(rv);
+            MyData.set_all_music_in_rv(rv);
         }
         else if (s.equals(TAG_MY))
         {
-            Data.set_my_music_in_rv(rv);
+            MyData.set_my_music_in_rv(rv);
         }
 
     }

@@ -41,7 +41,7 @@ public class DetailMusic extends AppCompatActivity {
         add_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Music lm = Data.get_music(id);
+                Music lm = MyData.get_music(id);
 
                 if (!lm.fav){
                     add_delete.setText("Убрать из избранного");
@@ -49,13 +49,13 @@ public class DetailMusic extends AppCompatActivity {
                 else {
                     add_delete.setText("Добавить в избранное");
                 }
-                Data.swap_fav(lm);
+                MyData.swap_fav(lm);
             }
         });
         text = (LinearLayout) findViewById(R.id.text_music);
 
 
-        Music m = Data.get_music(id);
+        Music m = MyData.get_music(id);
         set_music(m);
     }
 

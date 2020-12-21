@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,7 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Data.exit();
-                                    Data.set_my_id(mAuth.getUid());
-                                    Data.init();
+                                    MyData.exit();
+                                    MyData.set_my_id(mAuth.getUid());
+                                    MyData.init(MainActivity.this);
                                     Intent intent = new Intent(MainActivity.this, MainMenu.class);
                                     startActivity(intent);
                                 } else {
@@ -95,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Data.exit();
-                                    Data.set_my_id(mAuth.getUid());
-                                    Data.init();
+                                    MyData.exit();
+                                    MyData.set_my_id(mAuth.getUid());
+                                    MyData.init(MainActivity.this);
                                     login_view.setText(mAuth.getCurrentUser().getEmail());
                                     Intent intent = new Intent(MainActivity.this, MainMenu.class);
                                     startActivity(intent);
@@ -133,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null)
         {
             login_view.setText(mAuth.getCurrentUser().getEmail());
-            Data.set_my_id(mAuth.getUid());
-            Data.init();
+            MyData.set_my_id(mAuth.getUid());
+            MyData.init(MainActivity.this);
         }
     }
 }
