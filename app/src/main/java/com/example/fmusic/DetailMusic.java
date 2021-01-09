@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+
 public class DetailMusic extends AppCompatActivity {
 
     // Класс для отображения и обработки детальной инфы - то окошко что открывается при нажатии на фильм в ресайкл вью

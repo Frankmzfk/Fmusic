@@ -18,8 +18,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import androidx.work.Data;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +40,8 @@ public class MyData
     public static String my_id;
     public static FirebaseFirestore db = FirebaseFirestore.getInstance();
     public static WorkManager mWorkManager;
+    public static FirebaseStorage storage;
+    public static Map<String, File> tracks = new HashMap<>();
 
     public static void set_my_id(String id)
     {
@@ -123,6 +131,7 @@ public class MyData
     // загрузка данных с файрбайса
     public static void init(Context context){
         mWorkManager = WorkManager.getInstance(context);
+        storage = FirebaseStorage.getInstance();
         if (all_music == null)
         {
             //всей музыки
@@ -138,11 +147,12 @@ public class MyData
 
                                     String band = (String) document.get("band");
                                     String img = (String) document.get("img");
+                                    String file = (String) document.get("file");
                                     String id = document.getId();
                                     String track = (String) document.get("track");
                                     List<String> text = (ArrayList<String>) document.get("text");
 
-                                    Music m = new Music(band, img, track, id, text, false);
+                                    Music m = new Music(band, img, track, file, id, text, false);
                                     all_music.put(document.getId(), m);
                                 }
                                 //избранной
@@ -200,10 +210,11 @@ public class MyData
 
                                     String band = (String) document.get("band");
                                     String img = (String) document.get("img");
+                                    String file = (String) document.get("file");
                                     String id = document.getId();
                                     String track = (String) document.get("track");
                                     List<String> text = (ArrayList<String>) document.get("text");
-                                    Music m = new Music(band, img, track, id, text, false);
+                                    Music m = new Music(band, img, track, file, id, text, false);
                                     all_music.put(document.getId(), m);
                                 }
                                 rv.setAdapter(new MusicActivity.MusicAdapter((ArrayList<Music>) all_music.values()));
@@ -237,11 +248,12 @@ public class MyData
 
                                     String band = (String) document.get("band");
                                     String img = (String) document.get("img");
+                                    String file = (String) document.get("file");
                                     String id = document.getId();
                                     String track = (String) document.get("track");
                                     List<String> text = (ArrayList<String>) document.get("text");
 
-                                    Music m = new Music(band, img, track, id, text, false);
+                                    Music m = new Music(band, img, track, file, id, text, false);
                                     all_music.put(document.getId(), m);
                                 }
                                 my_music = new ArrayList<>();
@@ -271,5 +283,25 @@ public class MyData
                         }
                     });
         }
+    }
+
+    public static void download(String m) throws IOException {
+        StorageReference storageRef = storage.getReference();
+        storageRef = storageRef.child(m);
+
+        File localFile = File.createTempFile("music", "mp3");
+
+        storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                tracks.put(m, localFile);
+                Log.e("HORSE", "скачалось");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 }
