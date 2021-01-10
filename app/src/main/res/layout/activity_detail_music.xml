@@ -23,6 +23,12 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Button
+            android:id="@+id/play"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Проиграть" />
+
         <TextView
             android:id="@+id/textView3"
             android:layout_width="match_parent"
