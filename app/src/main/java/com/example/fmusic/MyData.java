@@ -1,6 +1,8 @@
 package com.example.fmusic;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Adapter;
 
@@ -42,6 +44,7 @@ public class MyData
     public static WorkManager mWorkManager;
     public static FirebaseStorage storage;
     public static Map<String, File> tracks = new HashMap<>();
+    public static MediaPlayer player;
 
     public static void set_my_id(String id)
     {
@@ -285,23 +288,32 @@ public class MyData
         }
     }
 
-    public static void download(String m) throws IOException {
+    public static void play(String m, Context c) throws IOException {
         StorageReference storageRef = storage.getReference();
         storageRef = storageRef.child(m);
 
-        File localFile = File.createTempFile("music", "mp3");
-
-        storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                tracks.put(m, localFile);
-                Log.e("HORSE", "скачалось");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        if (!tracks.containsKey(m))
+        {
+            File localFile = File.createTempFile("music", "mp3");
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    tracks.put(m, localFile);
+                    if(player != null) {player.stop();}
+                    player = MediaPlayer.create(c, Uri.parse(localFile.getAbsolutePath()));
+                    player.start();
+                    Log.e("HORSE", "скачалось");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        } else {
+            if(player != null) {player.stop();}
+            player = MediaPlayer.create(c, Uri.parse(tracks.get(m).getAbsolutePath()));
+            player.start();
+        }
     }
 }
