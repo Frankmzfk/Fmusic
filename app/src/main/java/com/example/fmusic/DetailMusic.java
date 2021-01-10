@@ -20,12 +20,14 @@ public class DetailMusic extends AppCompatActivity {
     // Класс для отображения и обработки детальной инфы - то окошко что открывается при нажатии на фильм в ресайкл вью
 
     Button add_delete;
+    Button play;
     LinearLayout text;
 
     TextView band;
     TextView track;
     ImageView imageView;
     String id;
+    boolean play_state = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,29 @@ public class DetailMusic extends AppCompatActivity {
                 MyData.swap_fav(lm);
             }
         });
+
+        play = (Button) findViewById(R.id.play);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!play_state)
+                {
+                    play_state = !play_state;
+                    play.setText("Остановить");
+                    Music lm = MyData.get_music(id);
+                    try {
+                        MyData.play(lm.file, DetailMusic.this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    play_state = !play_state;
+                    play.setText("Проиграть");
+                    MyData.player.stop();
+                }
+            }
+        });
+
         text = (LinearLayout) findViewById(R.id.text_music);
 
 
